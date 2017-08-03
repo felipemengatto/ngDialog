@@ -800,6 +800,12 @@
                             opts.data = angular.merge(angular.copy(options.data), opts.data);
                         }
 
+                        // IMPLEMENTADO PARA MOBILE ( BACK BUTTON CORDOVA)
+                        var mobile = opts.isMobile;
+                        if (mobile) {
+                            publicMethods.updateBackButton();
+                        }
+
                         angular.extend(options, opts);
 
                         options.scope = angular.isObject(options.scope) ? options.scope.$new() : $rootScope.$new();
@@ -819,6 +825,29 @@
                             });
                             return defer.promise;
                         }
+
+                    },
+
+                    // muda funçao de botao voltar ( somente android )
+                    updateBackButton: function() {
+
+                        // remove evento atual que existe no botão
+                        document.removeEventListener("backbutton", onBackKeyDown, false);
+
+                        // funcao de evento
+                        function onBackKeyDown() {
+
+                            // manda fechar ngdialog
+                            publicMethods.close();
+
+                            // remove evento atual
+                            document.removeEventListener("backbutton", onBackKeyDown, false);
+                            
+                        }
+
+                        // add novo evento
+                        document.addEventListener("backbutton", onBackKeyDown, false);
+                        
                     },
 
                     isOpen: function(id) {
